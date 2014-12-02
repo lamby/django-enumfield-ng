@@ -7,10 +7,9 @@ setup(
     description="Type-safe, efficient & database-agnostic enumeration field "
         'for Django.',
     version="0.1",
-    url='http://code.playfire.com/',
 
-    author='Playfire.com',
-    author_email='tech@playfire.com',
+    author='Chris Lamb',
+    author_email='chris@chris-lamb.co.uk',
     license='BSD',
 
     packages=find_packages(),
