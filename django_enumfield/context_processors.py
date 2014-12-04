@@ -3,13 +3,14 @@ import inspect
 from django.conf import settings
 from django.utils.functional import memoize
 
+from .utils import TemplateErrorDict
 from .enumeration import Enumeration
 
 def enumfield_context(request):
     return {'enums': get_enums()}
 
 def get_enums():
-    result = {}
+    result = TemplateErrorDict("Unknown app name %s")
 
     for app in settings.INSTALLED_APPS:
         module = getattr(__import__(app, {}, {}, ('enums',)), 'enums', None)
@@ -24,7 +25,12 @@ def get_enums():
             if not issubclass(v, Enumeration) or v == Enumeration:
                 continue
 
-            result.setdefault(app.split('.')[-1], {})[k] = list(v)
+            app_name = app.split('.')[-1]
+
+            result.setdefault(
+                app_name,
+                TemplateErrorDict("Unknown enum %%r in %r app" % app_name),
+            )[k] = list(v)
 
     return result
 
