@@ -1,3 +1,11 @@
+from django.http import Http404
+
+def get_enum_or_404(enum, slug):
+    try:
+        return enum.from_slug(slug)
+    except ValueError:
+        raise Http404()
+
 class TemplateErrorDict(dict):
     """
     Like a regular dict but raises our own exception instead of ``KeyError`` to
