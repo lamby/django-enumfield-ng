@@ -8,9 +8,9 @@ class EnumerationMeta(type):
         for base in bases:
             if hasattr(base, 'sorted_items'):
                 items.extend(base.sorted_items)
+        slugs = set(x.slug for _, x in items)
+        values = set(x.value for _, x in items)
 
-        slugs = set()
-        values = set()
         for n, item in list(attrs.items()):
             if not isinstance(item, Item):
                 continue
