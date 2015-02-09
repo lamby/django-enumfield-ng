@@ -67,7 +67,7 @@ class EnumerationBase(object):
             )
 
     @classmethod
-    def to_item(cls, value):
+    def to_python(cls, value):
         if value in (None, '', u''):
             return None
 

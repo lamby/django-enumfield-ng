@@ -14,7 +14,7 @@ class EnumField(models.Field):
         return 'IntegerField'
 
     def to_python(self, value):
-        return self.enumeration.to_item(value)
+        return self.enumeration.to_python(value)
 
     def get_db_prep_save(self, value, connection=None):
         if value is None:
