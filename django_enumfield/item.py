@@ -36,11 +36,13 @@ class Item(object):
     def __eq__(self, other):
         if isinstance(other, Item):
             return self.value == other.value
+
         if isinstance(other, (int, str, long, unicode)):
             try:
                 return self.value == int(other)
             except ValueError:
                 return unicode(self.slug) == unicode(other)
+
         return False
 
     def __ne__(self, other):
