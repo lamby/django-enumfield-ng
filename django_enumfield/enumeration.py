@@ -30,7 +30,6 @@ class EnumerationMeta(type):
             values.add(item.value)
 
         items.sort(key=lambda i: i[1].creation_counter)
-        item_objects = [i[1] for i in items]
 
         specials = {
             'items': dict(items),
