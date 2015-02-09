@@ -45,7 +45,7 @@ class EnumerationMeta(type):
         return super(EnumerationMeta, mcs).__new__(mcs, name, bases, attrs)
 
     def __iter__(mcs):
-        return iter(mcs.get_items())
+        return iter(x[1] for x in mcs.sorted_items)
 
     def __getitem__(mcs, prop):
         return mcs.items[prop]
