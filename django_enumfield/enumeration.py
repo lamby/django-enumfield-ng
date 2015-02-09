@@ -9,26 +9,21 @@ class EnumerationMeta(type):
             if hasattr(base, 'items'):
                 items.extend(base.items)
 
-        slugs = set(x.slug for _, x in items)
-        values = set(x.value for _, x in items)
-
         for n, item in list(attrs.items()):
             if not isinstance(item, Item):
                 continue
 
-            if item.value in values:
+            if item.value in {x.value for _, x in items}:
                 raise ValueError(
                     "Item value %d has been used more than once (%s)" % \
                         (item.value, item)
                 )
-            if item.slug in slugs:
+            if item.slug in {x.slug for _, x in items}:
                 raise ValueError(
                     "Item slug %r has been used more than once" % item.slug
                 )
 
             items.append((n, item))
-            slugs.add(item.slug)
-            values.add(item.value)
 
         items.sort(key=lambda x: x[1].creation_counter)
 
