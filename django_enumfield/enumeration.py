@@ -6,8 +6,8 @@ class EnumerationMeta(type):
 
         # Inherit items from parent classes
         for base in bases:
-            if hasattr(base, 'items'):
-                items.extend(base.items.items())
+            if hasattr(base, 'sorted_items'):
+                items.extend(base.sorted_items)
 
         slugs = set()
         values = set()
@@ -32,7 +32,6 @@ class EnumerationMeta(type):
         items.sort(key=lambda i: i[1].creation_counter)
 
         specials = {
-            'items': dict(items),
             'sorted_items': items,
         }
 
