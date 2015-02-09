@@ -24,6 +24,11 @@ class EnumerationMeta(type):
                 raise ValueError(
                     "Item slug %r has been used more than once" % item.slug
                 )
+            elif item.slug.lower() != n.lower():
+                raise ValueError(
+                    "Class attribute name %r does not match item slug %r" % \
+                        (n, item.slug)
+                )
 
             items.append((n, item))
 
