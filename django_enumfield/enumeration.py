@@ -74,19 +74,15 @@ class EnumerationBase(object):
         if isinstance(value, Item):
             return value
 
-        item = None
+        try:
+            return cls.from_value(value)
+        except ValueError:
+            pass
 
         try:
-            value = int(value)
-            item = cls.from_value(value)
+            return cls.from_slug(value)
         except ValueError:
-            try:
-                item = cls.from_slug(value)
-            except ValueError:
-                pass
-
-        if item:
-            return item
+            pass
 
         raise ValueError(
             "%r is not a valid slug or value for the enumeration" % value
