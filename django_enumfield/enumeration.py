@@ -48,16 +48,7 @@ class EnumerationMeta(type):
 
         attrs.update(specials)
 
-        init_class = attrs.pop('init_class', None)
-        cls = super(EnumerationMeta, mcs).__new__(mcs, name, bases, attrs)
-
-        if init_class:
-            init_class(cls)
-
-        return cls
-
-    def init_class(mcs):
-        pass
+        return super(EnumerationMeta, mcs).__new__(mcs, name, bases, attrs)
 
     def __iter__(mcs):
         return iter(mcs.get_items())
