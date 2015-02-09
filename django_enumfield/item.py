@@ -1,6 +1,7 @@
 class ItemMeta(type):
     def __new__(mcs, name, bases, attrs):
         mcs.creation_counter = 0
+
         return super(ItemMeta, mcs).__new__(mcs, name, bases, attrs)
 
 class Item(object):
