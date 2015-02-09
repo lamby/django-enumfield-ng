@@ -3,10 +3,10 @@ from django.db import models
 class EnumField(models.Field):
     __metaclass__ = models.SubfieldBase
 
-    def __init__(self, enumeration, *args, **kwargs):
-        self.enumeration = enumeration
+    def __init__(self, enum, *args, **kwargs):
+        self.enum = enum
 
-        kwargs.setdefault('choices', enumeration.get_choices())
+        kwargs.setdefault('choices', enum.get_choices())
 
         super(EnumField, self).__init__(*args, **kwargs)
 
@@ -14,7 +14,7 @@ class EnumField(models.Field):
         return 'IntegerField'
 
     def to_python(self, value):
-        return self.enumeration.to_python(value)
+        return self.enum.to_python(value)
 
     def get_db_prep_save(self, value, connection=None):
         if value is None:
