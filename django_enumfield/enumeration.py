@@ -54,7 +54,7 @@ class EnumerationBase(object):
     @classmethod
     def from_value(cls, value):
         try:
-            return {x.value: x for x in cls.items}[value]
+            return {x.value: x for _, x in cls.sorted_items}[value]
         except KeyError:
             raise ValueError(
                 "%r is not a valid value for the enumeration" % value
@@ -63,7 +63,7 @@ class EnumerationBase(object):
     @classmethod
     def from_slug(cls, slug):
         try:
-            return {x.slug: x for x in cls.items}[slug]
+            return {x.slug: x for _, x in cls.sorted_items}[slug]
         except KeyError:
             raise ValueError(
                 "%r is not a valid slug for the enumeration" % slug
