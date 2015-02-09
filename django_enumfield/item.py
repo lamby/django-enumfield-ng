@@ -32,14 +32,6 @@ class Item(object):
         self.creation_counter = Item.creation_counter
         Item.creation_counter += 1
 
-    def __str__(self):
-        return self.__unicode__()
-
-    def __unicode__(self):
-        # This is not pretty, but it makes the Django admin work right when it
-        # renders a select box
-        return self.slug
-
     def __repr__(self):
         return u"<enum.Item: %d %s %r>" % (self.value, self.slug, self.display)
 
