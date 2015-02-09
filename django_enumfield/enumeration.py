@@ -32,14 +32,9 @@ class EnumerationMeta(type):
         items.sort(key=lambda i: i[1].creation_counter)
         item_objects = [i[1] for i in items]
 
-        by_val = dict((i.value, i) for i in item_objects)
-        by_slug = dict((i.slug, i) for i in item_objects)
-
         specials = {
             'items': dict(items),
             'sorted_items': items,
-            'items_by_val': by_val,
-            'items_by_slug': by_slug,
         }
 
         for k in specials.keys():
@@ -59,7 +54,7 @@ class EnumerationBase(object):
     @classmethod
     def from_value(cls, value):
         try:
-            return cls.items_by_val[value]
+            return {x.value: x for x in cls.items}[value]
         except KeyError:
             raise ValueError(
                 "%r is not a valid value for the enumeration" % value
@@ -68,7 +63,7 @@ class EnumerationBase(object):
     @classmethod
     def from_slug(cls, slug):
         try:
-            return cls.items_by_slug[slug]
+            return {x.slug: x for x in cls.items}[slug]
         except KeyError:
             raise ValueError(
                 "%r is not a valid slug for the enumeration" % slug
