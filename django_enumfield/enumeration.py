@@ -67,10 +67,6 @@ class EnumerationBase(object):
             )
 
     @classmethod
-    def get_items(cls):
-        return [x for _, x in cls.sorted_items]
-
-    @classmethod
     def get_choices(cls):
         return [(x, x.display) for _, x in cls.sorted_items]
 
