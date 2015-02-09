@@ -6,7 +6,7 @@ class EnumerationMeta(type):
 
         # Inherit items from parent classes
         for base in bases:
-            if hasattr(base, 'items'):
+            if base is not EnumerationBase:
                 items.extend(base.items)
 
         for n, item in list(attrs.items()):
