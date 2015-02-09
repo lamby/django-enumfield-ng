@@ -9,7 +9,7 @@ class EnumerationMeta(type):
             if base is not EnumerationBase:
                 items.extend(base.items)
 
-        for n, item in list(attrs.items()):
+        for n, item in attrs.items():
             if not isinstance(item, Item):
                 continue
 
