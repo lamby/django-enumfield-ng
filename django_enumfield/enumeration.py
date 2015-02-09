@@ -127,4 +127,3 @@ def make_enum(name, *items):
         (Enumeration,),
         dict((i.slug.upper(), i) for i in items),
     )
-
