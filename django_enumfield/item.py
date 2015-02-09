@@ -14,7 +14,7 @@ class Item(object):
         if not isinstance(slug, str):
             raise TypeError("item slug should be a str, not %r" % type(slug))
 
-        if display is not None and not isinstance(display, (basestring)):
+        if display is not None and not isinstance(display, basestring):
             raise TypeError("item display name should be a basestring, not %r" \
                 % type(display))
 
