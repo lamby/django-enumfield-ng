@@ -24,8 +24,9 @@ class EnumField(models.Field):
 
     def get_db_prep_lookup(self, lookup_type, value, connection=None, prepared=False):
         def prepare(value):
-            v = self.to_python(value)
-            return self.get_db_prep_save(v, connection=connection)
+            x = self.to_python(value)
+
+            return self.get_db_prep_save(x, connection=connection)
 
         if lookup_type in ('exact', 'lt', 'lte', 'gt', 'gte'):
             return [prepare(value)]
