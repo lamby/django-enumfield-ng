@@ -30,7 +30,7 @@ class EnumerationMeta(type):
             slugs.add(item.slug)
             values.add(item.value)
 
-        items.sort(key=lambda i: i[1].creation_counter)
+        items.sort(key=lambda x: x[1].creation_counter)
 
         specials = {
             'items': items,
