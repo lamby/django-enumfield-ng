@@ -67,10 +67,6 @@ class EnumerationBase(object):
             )
 
     @classmethod
-    def get_choices(cls):
-        return [(x, x.display) for _, x in cls.sorted_items]
-
-    @classmethod
     def to_item(cls, value):
         if value in (None, '', u''):
             return None
@@ -95,6 +91,10 @@ class EnumerationBase(object):
         raise ValueError(
             "%r is not a valid slug or value for the enumeration" % value
         )
+
+    @classmethod
+    def get_choices(cls):
+        return [(x, x.display) for _, x in cls.sorted_items]
 
 class Enumeration(EnumerationBase):
     __metaclass__ = EnumerationMeta
