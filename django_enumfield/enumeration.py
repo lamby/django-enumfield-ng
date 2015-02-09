@@ -47,9 +47,6 @@ class EnumerationMeta(type):
     def __iter__(mcs):
         return iter(x[1] for x in mcs.sorted_items)
 
-    def __getitem__(mcs, prop):
-        return mcs.items[prop]
-
 class EnumerationBase(object):
     @classmethod
     def from_value(cls, value):
