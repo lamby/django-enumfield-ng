@@ -6,8 +6,9 @@ class EnumerationMeta(type):
 
         # Inherit items from parent classes
         for base in bases:
-            if hasattr(base, 'sorted_items'):
-                items.extend(base.sorted_items)
+            if hasattr(base, 'items'):
+                items.extend(base.items)
+
         slugs = set(x.slug for _, x in items)
         values = set(x.value for _, x in items)
 
@@ -32,7 +33,7 @@ class EnumerationMeta(type):
         items.sort(key=lambda i: i[1].creation_counter)
 
         specials = {
-            'sorted_items': items,
+            'items': items,
         }
 
         for k in specials.keys():
@@ -43,13 +44,13 @@ class EnumerationMeta(type):
         return super(EnumerationMeta, mcs).__new__(mcs, name, bases, attrs)
 
     def __iter__(mcs):
-        return iter(x for _, x in mcs.sorted_items)
+        return iter(x for _, x in mcs.items)
 
 class EnumerationBase(object):
     @classmethod
     def from_value(cls, value):
         try:
-            return {x.value: x for _, x in cls.sorted_items}[value]
+            return {x.value: x for _, x in cls.items}[value]
         except KeyError:
             raise ValueError(
                 "%r is not a valid value for the enumeration" % value
@@ -58,7 +59,7 @@ class EnumerationBase(object):
     @classmethod
     def from_slug(cls, slug):
         try:
-            return {x.slug: x for _, x in cls.sorted_items}[slug]
+            return {x.slug: x for _, x in cls.items}[slug]
         except KeyError:
             raise ValueError(
                 "%r is not a valid slug for the enumeration" % slug
@@ -88,7 +89,7 @@ class EnumerationBase(object):
 
     @classmethod
     def get_choices(cls):
-        return [(x, x.display) for _, x in cls.sorted_items]
+        return [(x, x.display) for _, x in cls.items]
 
 class Enumeration(EnumerationBase):
     __metaclass__ = EnumerationMeta
