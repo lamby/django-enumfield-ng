@@ -4,6 +4,8 @@ class EnumerationMeta(type):
     def __new__(mcs, name, bases, attrs):
         items = []
 
+        print name, bases, attrs
+
         # Inherit items from parent classes
         for base in bases:
             if hasattr(base, 'items'):
@@ -18,7 +20,7 @@ class EnumerationMeta(type):
                     "Item value %d has been used more than once (%s)" % \
                         (item.value, item)
                 )
-            if item.slug in {x.slug for _, x in items}:
+            elif item.slug in {x.slug for _, x in items}:
                 raise ValueError(
                     "Item slug %r has been used more than once" % item.slug
                 )
