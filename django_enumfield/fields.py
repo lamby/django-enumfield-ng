@@ -5,6 +5,7 @@ class EnumField(models.Field):
 
     def __init__(self, enumeration, *args, **kwargs):
         self.enumeration = enumeration
+
         kwargs.setdefault('choices', enumeration.get_choices())
 
         super(EnumField, self).__init__(*args, **kwargs)
