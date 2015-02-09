@@ -13,20 +13,22 @@ class EnumerationMeta(type):
                 items.extend(base.items.items())
 
         for n, item in list(attrs.items()):
-            if isinstance(item, Item):
-                if item.value in used_values:
-                    raise ValueError(
-                        "Item value %d has been used more than once (%s)" % \
-                            (item.value, item)
-                    )
-                used_values.add(item.value)
-                if item.slug in used_slugs:
-                    raise ValueError(
-                        "Item slug %r has been used more than once" % item.slug
-                    )
-                used_slugs.add(item.slug)
+            if not isinstance(item, Item):
+                continue
 
-                items.append((n, item))
+            if item.value in used_values:
+                raise ValueError(
+                    "Item value %d has been used more than once (%s)" % \
+                        (item.value, item)
+                )
+            used_values.add(item.value)
+            if item.slug in used_slugs:
+                raise ValueError(
+                    "Item slug %r has been used more than once" % item.slug
+                )
+            used_slugs.add(item.slug)
+
+            items.append((n, item))
 
         items.sort(key=lambda i: i[1].creation_counter)
         item_objects = [i[1] for i in items]
