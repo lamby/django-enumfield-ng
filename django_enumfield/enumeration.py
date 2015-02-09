@@ -25,9 +25,9 @@ class EnumerationMeta(type):
                     "Item slug %r has been used more than once" % item.slug
                 )
 
+            items.append((n, item))
             slugs.add(item.slug)
             values.add(item.value)
-            items.append((n, item))
 
         items.sort(key=lambda i: i[1].creation_counter)
         item_objects = [i[1] for i in items]
