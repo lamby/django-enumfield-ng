@@ -2,9 +2,10 @@ from .item import Item
 
 class EnumerationMeta(type):
     def __new__(mcs, name, bases, attrs):
-        used_values = set()
-        used_slugs = set()
         items = []
+
+        used_slugs = set()
+        used_values = set()
 
         # Inherit items from parent classes
         for base in bases:
