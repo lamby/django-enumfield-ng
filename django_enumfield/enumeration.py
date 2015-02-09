@@ -4,30 +4,29 @@ class EnumerationMeta(type):
     def __new__(mcs, name, bases, attrs):
         items = []
 
-        used_slugs = set()
-        used_values = set()
-
         # Inherit items from parent classes
         for base in bases:
             if hasattr(base, 'items'):
                 items.extend(base.items.items())
 
+        slugs = set()
+        values = set()
         for n, item in list(attrs.items()):
             if not isinstance(item, Item):
                 continue
 
-            if item.value in used_values:
+            if item.value in values:
                 raise ValueError(
                     "Item value %d has been used more than once (%s)" % \
                         (item.value, item)
                 )
-            used_values.add(item.value)
-            if item.slug in used_slugs:
+            if item.slug in slugs:
                 raise ValueError(
                     "Item slug %r has been used more than once" % item.slug
                 )
-            used_slugs.add(item.slug)
 
+            slugs.add(item.slug)
+            values.add(item.value)
             items.append((n, item))
 
         items.sort(key=lambda i: i[1].creation_counter)
