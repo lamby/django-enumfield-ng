@@ -22,11 +22,7 @@ class Item(object):
 
         self.value = value
         self.slug = slug
-
-        if display is None:
-            self.display = slug.capitalize()
-        else:
-            self.display = display
+        self.display = display if display is not None else slug.capitalize()
 
         self.creation_counter = Item.creation_counter
         Item.creation_counter += 1
