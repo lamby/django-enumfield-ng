@@ -8,7 +8,7 @@ class Item(object):
 
     def __init__(self, value, slug, display=None):
         if not isinstance(value, int):
-            raise TypeError("item value should be an integer, not %r" \
+            raise TypeError("item value should be an int, not %r" \
                 % type(value))
 
         if not isinstance(slug, str):
