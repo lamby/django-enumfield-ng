@@ -1,4 +1,19 @@
+class ItemMeta(type):
+    def __new__(mcs, name, bases, attrs):
+        cls = super(ItemMeta, mcs).__new__(mcs, name, bases, attrs)
+
+        try:
+            item = cls(attrs['value'], name, attrs.get('display'))
+        except KeyError:
+            pass
+        else:
+            cls.__enum__.add_item(item)
+
+        return cls
+
 class Item(object):
+    __metaclass__ = ItemMeta
+
     def __init__(self, value, slug, display=None):
         if not isinstance(value, int):
             raise TypeError("item value should be an int, not %r" \
