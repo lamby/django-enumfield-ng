@@ -10,6 +10,10 @@ class EnumField(models.Field):
 
         super(EnumField, self).__init__(*args, **kwargs)
 
+    def get_default(self):
+        # Return the actual instance, not a str
+        return self.default
+
     def get_internal_type(self):
         return 'IntegerField'
 
