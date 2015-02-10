@@ -1,12 +1,4 @@
-class ItemMeta(type):
-    def __new__(mcs, name, bases, attrs):
-        mcs.creation_counter = 0
-
-        return super(ItemMeta, mcs).__new__(mcs, name, bases, attrs)
-
 class Item(object):
-    __metaclass__ = ItemMeta
-
     def __init__(self, value, slug, display=None):
         if not isinstance(value, int):
             raise TypeError("item value should be an int, not %r" \
@@ -19,14 +11,9 @@ class Item(object):
             raise TypeError("item display name should be a basestring, not %r" \
                 % type(display))
 
-        super(Item, self).__init__()
-
         self.value = value
         self.slug = slug
         self.display = display if display is not None else slug.capitalize()
-
-        self.creation_counter = Item.creation_counter
-        Item.creation_counter += 1
 
     def __repr__(self):
         return u"<enum.Item: %d %s %r>" % (self.value, self.slug, self.display)

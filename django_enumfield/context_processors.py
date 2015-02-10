@@ -3,8 +3,8 @@ import inspect
 from django.conf import settings
 from django.utils.functional import memoize
 
+from .enum import Enum
 from .utils import TemplateErrorDict
-from .enumeration import Enumeration
 
 def enumfield_context(request):
     return {'enums': get_enums()}
@@ -18,11 +18,8 @@ def get_enums():
         if module is None:
             continue
 
-        for k, v in inspect.getmembers(module):
-            if not inspect.isclass(v):
-                continue
-
-            if not issubclass(v, Enumeration) or v == Enumeration:
+        for _, x in inspect.getmembers(module):
+            if not isinstance(x, Enum):
                 continue
 
             app_name = app.split('.')[-1]
@@ -30,7 +27,7 @@ def get_enums():
             result.setdefault(
                 app_name,
                 TemplateErrorDict("Unknown enum %%r in %r app" % app_name),
-            )[k] = list(v)
+            )[x.name] = x
 
     return result
 
