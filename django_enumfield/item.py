@@ -30,6 +30,9 @@ class Item(object):
         self.slug = slug
         self.display = display if display is not None else slug.capitalize()
 
+    def __str__(self):
+        return self.slug
+
     def __repr__(self):
         return u"<enum.Item: %d %s %r>" % (self.value, self.slug, self.display)
 
