@@ -41,7 +41,7 @@ class Enum(list):
             raise ValueError("%r is not a valid slug for the enum" % slug)
 
     def get_choices(self):
-        return [(x.slug, x.display) for x in self]
+        return [(x, x.display) for x in self]
 
     def to_python(self, value):
         if value in (None, '', u''):
