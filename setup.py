@@ -8,7 +8,8 @@ setup(
         'for Django.',
     version="0.1",
 
-    author='Chris Lamb',
+    url="https://chris-lamb.co.uk/projects/django-enumfield",
+    author="Chris Lamb",
     author_email='chris@chris-lamb.co.uk',
     license='BSD',
 
