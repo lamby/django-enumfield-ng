@@ -13,9 +13,7 @@ class ItemMeta(type):
 
         return cls
 
-class Item(object):
-    __metaclass__ = ItemMeta
-
+class Item(six.with_metaclass(ItemMeta, object)):
     def __init__(self, value, slug, display=None):
         if not isinstance(value, int):
             raise TypeError("item value should be an int, not %r" \
