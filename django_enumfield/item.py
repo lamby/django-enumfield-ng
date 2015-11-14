@@ -1,3 +1,5 @@
+import six
+
 class ItemMeta(type):
     def __new__(mcs, name, bases, attrs):
         cls = super(ItemMeta, mcs).__new__(mcs, name, bases, attrs)
@@ -22,7 +24,7 @@ class Item(object):
         if not isinstance(slug, str):
             raise TypeError("item slug should be a str, not %r" % type(slug))
 
-        if display is not None and not isinstance(display, basestring):
+        if display is not None and not isinstance(display, six.string_types):
             raise TypeError("item display name should be a basestring, not %r" \
                 % type(display))
 
@@ -43,11 +45,11 @@ class Item(object):
         if isinstance(other, Item):
             return self.value == other.value
 
-        if isinstance(other, (int, str, long, unicode)):
+        if isinstance(other, (int, str, long, six.text_type)):
             try:
                 return self.value == int(other)
             except ValueError:
-                return unicode(self.slug) == unicode(other)
+                return six.text_type(self.slug) == six.text_type(other)
 
         return False
 
