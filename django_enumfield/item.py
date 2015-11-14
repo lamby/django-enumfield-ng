@@ -43,7 +43,7 @@ class Item(six.with_metaclass(ItemMeta, object)):
         if isinstance(other, Item):
             return self.value == other.value
 
-        if isinstance(other, (int, str, long, six.text_type)):
+        if isinstance(other, six.integer_types + six.string_types):
             try:
                 return self.value == int(other)
             except ValueError:
