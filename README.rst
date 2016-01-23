@@ -6,7 +6,7 @@ Instance based::
     FooEnum = Enum('FooEnum',
         Item(10, 'a', "Item A"),
         Item(20, 'b', "Item B"),
-    ) 
+    )
 
 Dynamically adding items::
 
