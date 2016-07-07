@@ -35,6 +35,9 @@ class Enum(list):
             raise ValueError("%r is not a valid value for the enum" % value)
 
     def from_slug(self, slug):
+        if not isinstance(slug, str):
+            raise TypeError("item slug should be a str, not %r" % type(slug))
+
         try:
             return {x.slug.lower(): x for x in self}[slug.lower()]
         except KeyError:
@@ -57,7 +60,7 @@ class Enum(list):
 
         try:
             return self.from_slug(value)
-        except ValueError:
+        except (ValueError, TypeError):
             pass
 
         raise ValueError("%r is not a valid slug or value for the enum" % value)
