@@ -1,2 +1,5 @@
 *.pyc
 docs/_build
+.coverage
+.tox/
+*.egg-info/
