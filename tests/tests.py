@@ -1,6 +1,10 @@
 import unittest
 
+from django.test import TestCase as DjangoTestCase
+
 from django_enumfield import Enum, Item
+
+from .models import TestModel, TestModelEnum
 
 
 class ItemTests(unittest.TestCase):
@@ -157,3 +161,67 @@ class EnumTests(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             self.enum.to_python('not_a_slug')
+
+
+class FieldTests(DjangoTestCase):
+    def assertCreated(self, num=1):
+        self.assertEqual(TestModel.objects.count(), num)
+
+    def test_model_instantiate(self):
+        TestModel(
+            test_field=TestModelEnum.A,
+            test_field_no_default=TestModelEnum.B,
+        )
+
+    def test_model_creation(self):
+        TestModel.objects.create(
+            test_field=TestModelEnum.A,
+            test_field_no_default=TestModelEnum.B,
+        )
+
+        self.assertCreated()
+
+    def test_field_default(self):
+        model = TestModel.objects.create(test_field_no_default=TestModelEnum.B)
+        self.assertEqual(model.test_field, TestModelEnum.A)
+
+    def test_field_from_slug(self):
+        model = TestModel.objects.create(test_field_no_default='a')
+        self.assertCreated()
+        self.assertEqual(model.test_field_no_default, TestModelEnum.A)
+
+    def test_field_from_value(self):
+        model = TestModel.objects.create(test_field_no_default=20)
+        self.assertCreated()
+        self.assertEqual(model.test_field_no_default, TestModelEnum.B)
+
+    def test_field_converts_to_python(self):
+        model1 = TestModel(test_field_no_default='a')
+        self.assertEqual(model1.test_field_no_default, TestModelEnum.A)
+
+        model2 = TestModel(test_field_no_default=20)
+        self.assertEqual(model2.test_field_no_default, TestModelEnum.B)
+
+    def test_query(self):
+        m1 = TestModel.objects.create(test_field_no_default=TestModelEnum.A)
+        TestModel.objects.create(test_field_no_default=TestModelEnum.B)
+
+        self.assertEqual(TestModel.objects.count(), 2)
+        self.assertEqual(
+            list(TestModel.objects.filter(
+                test_field_no_default=TestModelEnum.A,
+            )),
+            [m1],
+        )
+        self.assertEqual(
+            list(TestModel.objects.filter(
+                test_field_no_default='a',
+            )),
+            [m1],
+        )
+        self.assertEqual(
+            list(TestModel.objects.filter(
+                test_field_no_default=10,
+            )),
+            [m1],
+        )
