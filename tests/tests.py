@@ -1,10 +1,11 @@
 import unittest
 
+from django.http import HttpRequest, Http404
 from django.test import TestCase as DjangoTestCase
 from django.template import RequestContext
 from django.template.loader import render_to_string
 
-from django_enumfield import Enum, Item
+from django_enumfield import Enum, Item, get_enum_or_404
 from django_enumfield.utils import TemplateErrorException
 
 from .enums import TestModelEnum
@@ -246,3 +247,14 @@ class TemplateTests(DjangoTestCase):
         with self.assertRaises(TemplateErrorException):
             render_to_string('invalid.html', context_instance=ctx)
 
+
+class UtilsTests(unittest.TestCase):
+    def test_get_enum_or_404_valid(self):
+        self.assertEqual(
+            get_enum_or_404(TestModelEnum, 'a'),
+            TestModelEnum.A,
+        )
+
+    def test_get_enum_or_404_invalid(self):
+        with self.assertRaises(Http404):
+            get_enum_or_404(TestModelEnum, 'not_a_slug')
