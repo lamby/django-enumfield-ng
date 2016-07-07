@@ -4,7 +4,8 @@ from django.test import TestCase as DjangoTestCase
 
 from django_enumfield import Enum, Item
 
-from .models import TestModel, TestModelEnum
+from .enums import TestModelEnum
+from .models import TestModel
 
 
 class ItemTests(unittest.TestCase):

@@ -1,13 +1,8 @@
-from django_enumfield import EnumField, Enum, Item
+from django_enumfield import EnumField
 
 from django.db import models
 
-
-TestModelEnum = Enum(
-    'TestModelEnum',
-    Item(10, 'a', "Item A"),
-    Item(20, 'b', "Item B"),
-)
+from .enums import TestModelEnum
 
 
 class TestModel(models.Model):
