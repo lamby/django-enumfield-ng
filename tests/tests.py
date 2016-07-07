@@ -1,8 +1,11 @@
 import unittest
 
 from django.test import TestCase as DjangoTestCase
+from django.template import RequestContext
+from django.template.loader import render_to_string
 
 from django_enumfield import Enum, Item
+from django_enumfield.utils import TemplateErrorException
 
 from .enums import TestModelEnum
 from .models import TestModel
@@ -226,3 +229,20 @@ class FieldTests(DjangoTestCase):
             )),
             [m1],
         )
+
+
+class TemplateTests(DjangoTestCase):
+    def test_renders_template(self):
+        ctx = RequestContext(HttpRequest())
+
+        self.assertEqual(
+            render_to_string('test.html', context_instance=ctx),
+            "Item A, Item B\n",
+        )
+
+    def test_fails_loudly_for_invalid_app(self):
+        ctx = RequestContext(HttpRequest())
+
+        with self.assertRaises(TemplateErrorException):
+            render_to_string('invalid.html', context_instance=ctx)
+

@@ -8,3 +8,14 @@ DATABASES = {
         'NAME': ':memory:',
     },
 }
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django_enumfield.context_processors.enumfield_context',
+            ],
+        },
+    },
+]
