@@ -56,3 +56,28 @@ class EnumField(models.Field):
         item = self._get_val_from_obj(obj)
 
         return str(item.value)
+
+    def clone(self):
+        _, _, args, kwargs = self.deconstruct()
+        return models.IntegerField(*args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(EnumField, self).deconstruct()
+
+        # If there is a callable default, override it and set the first item
+        # from the enum. This is to stop randomised defaults causing unstable
+        # migrations, as deconstruct is called every time makemigrations is run
+        default = kwargs.get('default')
+        if default and callable(default):
+            kwargs['default'] = self.enum[0]
+
+        try:
+            kwargs['default'] = kwargs['default'].value
+        except (KeyError, AttributeError):
+            # No default or not an Item instance
+            pass
+
+        # We don't want to serialise this for migrations.
+        del kwargs['choices']
+
+        return name, 'django.db.models.fields.IntegerField', args, kwargs
