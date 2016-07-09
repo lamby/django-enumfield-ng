@@ -37,21 +37,6 @@ class EnumField(models.Field):
 
         raise TypeError("Lookup type %r not supported." % lookup_type)
 
-    def south_field_triple(self):
-        from south.modelsinspector import introspector, NOT_PROVIDED
-        args, kwargs = introspector(self)
-
-        # repr(Item) is not only invalid as an lookup value, it actually causes
-        # South to generate invalid Python
-        if self.default != NOT_PROVIDED:
-            kwargs['default'] = None
-
-            # Cannot set a real default if the "default" kwarg is a callable.
-            if not callable(self.default):
-                kwargs['default'] = self.default and self.default.value
-
-        return ('django.db.models.fields.IntegerField', args, kwargs)
-
     def value_to_string(self, obj):
         item = self._get_val_from_obj(obj)
 
