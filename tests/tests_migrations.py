@@ -42,14 +42,29 @@ class MigrationTests(DjangoTestCase):
 
         self.assertEqual(failed, expect_failure)
 
+    def assertMigrationExists(self, migration_number, exists=True):
+        migration_dir = os.path.join(self.tmp, 'tests', 'migrations')
+
+        migration_numbers = [
+            x.split('_')[0] for x in os.listdir(migration_dir)
+        ]
+
+        self.assertEqual(migration_number in migration_numbers, exists)
+
     def test_make_migrations(self):
         self.run_command('makemigrations tests')
+        self.assertMigrationExists('0001')
 
     def test_migrate(self):
         self.run_command('makemigrations tests')
+        self.assertMigrationExists('0001')
         self.run_command('migrate')
 
     def test_stable_migrations(self):
         self.run_command('makemigrations tests')
+        self.assertMigrationExists('0001')
+
         self.run_command('migrate')
+
         self.run_command('makemigrations tests --exit', expect_failure=True)
+        self.assertMigrationExists('0002', exists=False)
