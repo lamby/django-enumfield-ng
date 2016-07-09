@@ -22,3 +22,4 @@ TEMPLATES = [
 SILENCED_SYSTEM_CHECKS = [
     '1_7.W001',
 ]
+ROOT_URLCONF = 'tests.urls'
