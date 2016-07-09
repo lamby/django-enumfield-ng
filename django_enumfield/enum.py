@@ -35,7 +35,7 @@ class Enum(list):
             raise ValueError("%r is not a valid value for the enum" % value)
 
     def from_slug(self, slug):
-        if not isinstance(slug, str):
+        if not isinstance(slug, basestring):
             raise TypeError("item slug should be a str, not %r" % type(slug))
 
         try:
