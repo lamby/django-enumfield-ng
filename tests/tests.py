@@ -282,7 +282,7 @@ class FieldTests(DjangoTestCase):
 
     def test_field_lookup_in_non_existent_slug_fails(self):
         with self.assertRaises(ValueError):
-            TestModel.objects.filter(test_field__in=('blah',))
+            TestModel.objects.filter(test_field__in=('not_a_slug',))
 
     def test_field_lookup_in_non_existent_value_fails(self):
         with self.assertRaises(ValueError):
