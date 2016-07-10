@@ -181,6 +181,12 @@ class EnumTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.enum.to_python('not_a_slug')
 
+    def test_repr(self):
+        self.assertEqual(
+            repr(self.enum),
+            "<FooEnum: [%r, %r]>" % (self.enum.A, self.enum.B),
+        )
+
 
 class FieldTests(DjangoTestCase):
     def assertCreated(self, num=1):
