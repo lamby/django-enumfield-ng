@@ -78,6 +78,20 @@ class EnumConstructionTests(unittest.TestCase):
         self.assertEqual(FooEnum.B.display, "Item B")
         self.assertEqual(FooEnum.from_value(10).slug, 'a')
 
+    def test_dynamic_enum_rejects_duplicate_value(self):
+        FooEnum = Enum('FooEnum')
+        FooEnum.add_item(Item(10, 'a', "Item A"))
+
+        with self.assertRaises(ValueError):
+            FooEnum.add_item(Item(10, 'b', "Item B"))
+
+    def test_dynamic_enum_rejects_duplicate_slug(self):
+        FooEnum = Enum('FooEnum')
+        FooEnum.add_item(Item(10, 'a', "Item A"))
+
+        with self.assertRaises(ValueError):
+            FooEnum.add_item(Item(20, 'a', "Item B"))
+
     def test_simple_registry_enum(self):
         FooEnum = Enum('FooEnum')
 
