@@ -16,17 +16,17 @@ class EnumField(models.Field):
     def to_python(self, value):
         return self.enum.to_python(value)
 
-    def get_db_prep_save(self, value, connection=None):
+    def get_prep_value(self, value):
         if value is None:
             return value
 
         return self.to_python(value).value
 
-    def get_db_prep_lookup(self, lookup_type, value, connection=None, prepared=False):
+    def get_prep_lookup(self, lookup_type, value):
         def prepare(value):
             x = self.to_python(value)
 
-            return self.get_db_prep_save(x, connection=connection)
+            return self.get_prep_value(x)
 
         if lookup_type in ('exact', 'lt', 'lte', 'gt', 'gte'):
             return [prepare(value)]
