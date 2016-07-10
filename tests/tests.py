@@ -1,10 +1,12 @@
 import unittest
 
+from django.db import models
 from django.core import serializers
 from django.http import HttpRequest, Http404
 from django.test import TestCase as DjangoTestCase
 from django.template import RequestContext
 from django.template.loader import render_to_string
+from django.db.models.fields import NOT_PROVIDED
 
 from django_enumfield import Enum, Item, get_enum_or_404
 from django_enumfield.utils import TemplateErrorException
@@ -360,6 +362,22 @@ class MigrationUnitTests(DjangoTestCase):
             [],
             {'default': 10},
         )
+
+    def test_field_clone(self):
+        model = TestModel()
+        field = model._meta.get_field('test_field_no_default')
+        clone = field.clone()
+
+        self.assertTrue(isinstance(clone, models.IntegerField))
+        self.assertEqual(clone.default, NOT_PROVIDED)
+
+    def test_field_clone_with_default(self):
+        model = TestModel()
+        field = model._meta.get_field('test_field')
+        clone = field.clone()
+
+        self.assertTrue(isinstance(clone, models.IntegerField))
+        self.assertEqual(clone.default, 10)
 
 
 class SerialisationTests(DjangoTestCase):
