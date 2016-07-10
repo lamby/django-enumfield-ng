@@ -29,6 +29,12 @@ class Enum(list):
         self.append(item)
 
     def from_value(self, value):
+        if not isinstance(value, int):
+            # Allow values that convert to int, as we might be deserialising an
+            # int value. Raises ValueError and falls through to_python
+            # accordingly if this is not actually an int.
+            value = int(value)
+
         try:
             return {x.value: x for x in self}[value]
         except KeyError:

@@ -1,5 +1,6 @@
 import unittest
 
+from django.core import serializers
 from django.http import HttpRequest, Http404
 from django.test import TestCase as DjangoTestCase
 from django.template import RequestContext
@@ -358,4 +359,21 @@ class MigrationUnitTests(DjangoTestCase):
             'test_field',
             [],
             {'default': 10},
+        )
+
+
+class SerialisationTests(DjangoTestCase):
+    def test_serialisation(self):
+        m_in = TestModel.objects.create(test_field_no_default=TestModelEnum.B)
+
+        data = serializers.serialize('xml', TestModel.objects.all())
+        objects = serializers.deserialize('xml', data)
+
+        m_out = next(objects).object
+
+        self.assertEqual(m_in.pk, m_out.pk)
+        self.assertEqual(m_in.test_field, m_out.test_field)
+        self.assertEqual(
+            m_in.test_field_no_default,
+            m_out.test_field_no_default,
         )
