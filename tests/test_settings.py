@@ -1,6 +1,7 @@
 SECRET_KEY = 'fake-key'
 INSTALLED_APPS = [
     'tests',
+    'tests.app',
 ]
 DATABASES = {
     'default': {
