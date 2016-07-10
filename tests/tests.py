@@ -9,7 +9,7 @@ from django_enumfield import Enum, Item, get_enum_or_404
 from django_enumfield.utils import TemplateErrorException
 
 from .enums import TestModelEnum
-from .models import TestModel
+from .models import TestModel, TestModelNull
 
 
 class ItemTests(unittest.TestCase):
@@ -250,6 +250,51 @@ class FieldTests(DjangoTestCase):
             )),
             [m1],
         )
+
+    def test_null_field(self):
+        TestModelNull.objects.create(test_field_null=None)
+
+    def test_field_lookup(self):
+        TestModelNull.objects.create(test_field_null=None)
+        m2 = TestModelNull.objects.create(test_field_null=TestModelEnum.A)
+
+        query = TestModelNull.objects.filter(
+            test_field_null__in=(TestModelEnum.A, TestModelEnum.B),
+        )
+
+        self.assertEqual(list(query), [m2])
+
+    def test_field_lookup_in_slugs(self):
+        TestModelNull.objects.create(test_field_null=None)
+        m2 = TestModelNull.objects.create(test_field_null=TestModelEnum.A)
+
+        query = TestModelNull.objects.filter(test_field_null__in=('a', 'b'))
+
+        self.assertEqual(list(query), [m2])
+
+    def test_field_lookup_in_values(self):
+        TestModelNull.objects.create(test_field_null=None)
+        m2 = TestModelNull.objects.create(test_field_null=TestModelEnum.A)
+
+        query = TestModelNull.objects.filter(test_field_null__in=(10, 20))
+
+        self.assertEqual(list(query), [m2])
+
+    def test_field_lookup_in_non_existent_slug_fails(self):
+        with self.assertRaises(ValueError):
+            TestModel.objects.filter(test_field__in=('blah',))
+
+    def test_field_lookup_in_non_existent_value_fails(self):
+        with self.assertRaises(ValueError):
+            TestModel.objects.filter(test_field__in=(999,))
+
+    def test_isnull(self):
+        m1 = TestModelNull.objects.create(test_field_null=None)
+        TestModelNull.objects.create(test_field_null=TestModelEnum.A)
+
+        query = TestModelNull.objects.filter(test_field_null__isnull=True)
+
+        self.assertEqual(list(query), [m1])
 
 
 class TemplateTests(DjangoTestCase):
