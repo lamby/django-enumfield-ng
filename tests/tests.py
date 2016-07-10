@@ -296,6 +296,10 @@ class FieldTests(DjangoTestCase):
 
         self.assertEqual(list(query), [m1])
 
+    def test_unsupported_lookup(self):
+        with self.assertRaises(TypeError):
+            TestModel.objects.filter(test_field__icontains=('blah',))
+
 
 class TemplateTests(DjangoTestCase):
     def test_renders_template(self):
