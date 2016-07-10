@@ -6,7 +6,7 @@ import subprocess
 from django.test import TestCase as DjangoTestCase
 
 
-class MigrationTests(DjangoTestCase):
+class MigrationIntegrationTests(DjangoTestCase):
     """
     In order to test migrations in the test project, via the public migrations
     interface (the management commands), we copy the test directory into a
