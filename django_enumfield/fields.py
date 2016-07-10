@@ -38,8 +38,7 @@ class EnumField(models.Field):
         raise TypeError("Lookup type %r not supported." % lookup_type)
 
     def value_to_string(self, obj):
-        item = self._get_val_from_obj(obj)
-
+        item = self.value_from_object(obj)
         return str(item.value)
 
     def clone(self):
