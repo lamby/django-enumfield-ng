@@ -1,15 +1,18 @@
 import unittest
 
+from django.db import models
+from django.core import serializers
 from django.http import HttpRequest, Http404
 from django.test import TestCase as DjangoTestCase
 from django.template import RequestContext
 from django.template.loader import render_to_string
+from django.db.models.fields import NOT_PROVIDED
 
 from django_enumfield import Enum, Item, get_enum_or_404
 from django_enumfield.utils import TemplateErrorException
 
 from .enums import TestModelEnum
-from .models import TestModel
+from .models import TestModel, TestModelNull, TestModelRandomDefault
 
 
 class ItemTests(unittest.TestCase):
@@ -77,6 +80,20 @@ class EnumConstructionTests(unittest.TestCase):
         self.assertEqual(FooEnum.A.slug, 'a')
         self.assertEqual(FooEnum.B.display, "Item B")
         self.assertEqual(FooEnum.from_value(10).slug, 'a')
+
+    def test_dynamic_enum_rejects_duplicate_value(self):
+        FooEnum = Enum('FooEnum')
+        FooEnum.add_item(Item(10, 'a', "Item A"))
+
+        with self.assertRaises(ValueError):
+            FooEnum.add_item(Item(10, 'b', "Item B"))
+
+    def test_dynamic_enum_rejects_duplicate_slug(self):
+        FooEnum = Enum('FooEnum')
+        FooEnum.add_item(Item(10, 'a', "Item A"))
+
+        with self.assertRaises(ValueError):
+            FooEnum.add_item(Item(20, 'a', "Item B"))
 
     def test_simple_registry_enum(self):
         FooEnum = Enum('FooEnum')
@@ -167,6 +184,12 @@ class EnumTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.enum.to_python('not_a_slug')
 
+    def test_repr(self):
+        self.assertEqual(
+            repr(self.enum),
+            "<FooEnum: [%r, %r]>" % (self.enum.A, self.enum.B),
+        )
+
 
 class FieldTests(DjangoTestCase):
     def assertCreated(self, num=1):
@@ -231,6 +254,55 @@ class FieldTests(DjangoTestCase):
             [m1],
         )
 
+    def test_null_field(self):
+        TestModelNull.objects.create(test_field_null=None)
+
+    def test_field_lookup(self):
+        TestModelNull.objects.create(test_field_null=None)
+        m2 = TestModelNull.objects.create(test_field_null=TestModelEnum.A)
+
+        query = TestModelNull.objects.filter(
+            test_field_null__in=(TestModelEnum.A, TestModelEnum.B),
+        )
+
+        self.assertEqual(list(query), [m2])
+
+    def test_field_lookup_in_slugs(self):
+        TestModelNull.objects.create(test_field_null=None)
+        m2 = TestModelNull.objects.create(test_field_null=TestModelEnum.A)
+
+        query = TestModelNull.objects.filter(test_field_null__in=('a', 'b'))
+
+        self.assertEqual(list(query), [m2])
+
+    def test_field_lookup_in_values(self):
+        TestModelNull.objects.create(test_field_null=None)
+        m2 = TestModelNull.objects.create(test_field_null=TestModelEnum.A)
+
+        query = TestModelNull.objects.filter(test_field_null__in=(10, 20))
+
+        self.assertEqual(list(query), [m2])
+
+    def test_field_lookup_in_non_existent_slug_fails(self):
+        with self.assertRaises(ValueError):
+            TestModel.objects.filter(test_field__in=('not_a_slug',))
+
+    def test_field_lookup_in_non_existent_value_fails(self):
+        with self.assertRaises(ValueError):
+            TestModel.objects.filter(test_field__in=(999,))
+
+    def test_isnull(self):
+        m1 = TestModelNull.objects.create(test_field_null=None)
+        TestModelNull.objects.create(test_field_null=TestModelEnum.A)
+
+        query = TestModelNull.objects.filter(test_field_null__isnull=True)
+
+        self.assertEqual(list(query), [m1])
+
+    def test_unsupported_lookup(self):
+        with self.assertRaises(TypeError):
+            TestModel.objects.filter(test_field__icontains=('blah',))
+
 
 class TemplateTests(DjangoTestCase):
     def test_renders_template(self):
@@ -258,3 +330,68 @@ class UtilsTests(unittest.TestCase):
     def test_get_enum_or_404_invalid(self):
         with self.assertRaises(Http404):
             get_enum_or_404(TestModelEnum, 'not_a_slug')
+
+
+class MigrationUnitTests(DjangoTestCase):
+    def assertDeconstruct(self, model_class, field, exp_args, exp_kwargs):
+        model = model_class()
+        name, path, args, kwargs = model._meta.get_field(field).deconstruct()
+        self.assertEqual(name, field)
+        self.assertEqual(path, 'django.db.models.fields.IntegerField')
+        self.assertEqual(args, exp_args)
+        self.assertEqual(kwargs, exp_kwargs)
+
+    def test_deconstruct(self):
+        self.assertDeconstruct(TestModel, 'test_field', [], {'default': 10})
+
+    def test_deconstruct_no_default(self):
+        self.assertDeconstruct(TestModel, 'test_field_no_default', [], {})
+
+    def test_deconstruct_null(self):
+        self.assertDeconstruct(
+            TestModelNull,
+            'test_field_null',
+            [],
+            {'null': True},
+        )
+
+    def test_deconstruct_callable_default(self):
+        self.assertDeconstruct(
+            TestModelRandomDefault,
+            'test_field',
+            [],
+            {'default': 10},
+        )
+
+    def test_field_clone(self):
+        model = TestModel()
+        field = model._meta.get_field('test_field_no_default')
+        clone = field.clone()
+
+        self.assertTrue(isinstance(clone, models.IntegerField))
+        self.assertEqual(clone.default, NOT_PROVIDED)
+
+    def test_field_clone_with_default(self):
+        model = TestModel()
+        field = model._meta.get_field('test_field')
+        clone = field.clone()
+
+        self.assertTrue(isinstance(clone, models.IntegerField))
+        self.assertEqual(clone.default, 10)
+
+
+class SerialisationTests(DjangoTestCase):
+    def test_serialisation(self):
+        m_in = TestModel.objects.create(test_field_no_default=TestModelEnum.B)
+
+        data = serializers.serialize('xml', TestModel.objects.all())
+        objects = serializers.deserialize('xml', data)
+
+        m_out = next(objects).object
+
+        self.assertEqual(m_in.pk, m_out.pk)
+        self.assertEqual(m_in.test_field, m_out.test_field)
+        self.assertEqual(
+            m_in.test_field_no_default,
+            m_out.test_field_no_default,
+        )

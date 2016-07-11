@@ -1,7 +1,7 @@
 import inspect
 
 from django.conf import settings
-from django.utils.functional import memoize
+from django.utils.lru_cache import lru_cache
 
 from .enum import Enum
 from .utils import TemplateErrorDict
@@ -9,6 +9,7 @@ from .utils import TemplateErrorDict
 def enumfield_context(request):
     return {'enums': get_enums()}
 
+@lru_cache()
 def get_enums():
     result = TemplateErrorDict("Unknown app name %s")
 
@@ -30,5 +31,3 @@ def get_enums():
             )[x.name] = x
 
     return result
-
-get_enums = memoize(get_enums, {}, 0)
