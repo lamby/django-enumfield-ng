@@ -1,6 +1,6 @@
 *.pyc
 docs/_build
-.coverage
+.coverage*
 .tox/
 *.egg-info/
 htmlcov/

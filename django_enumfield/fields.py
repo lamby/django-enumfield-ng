@@ -1,8 +1,8 @@
+import six
+
 from django.db import models
 
-class EnumField(models.Field):
-    __metaclass__ = models.SubfieldBase
-
+class EnumField(six.with_metaclass(models.SubfieldBase, models.Field)):
     def __init__(self, enum, *args, **kwargs):
         self.enum = enum
 
