@@ -301,8 +301,10 @@ class FieldTests(DjangoTestCase):
         self.assertEqual(list(query), [m1])
 
     def test_unsupported_lookup(self):
-        with self.assertRaises(TypeError):
-            TestModel.objects.filter(test_field__icontains=('blah',))
+        if django.VERSION < (1, 10):
+            # This feature is only supported pre-Django 1.10.
+            with self.assertRaises(TypeError):
+                TestModel.objects.filter(test_field__icontains=('blah',))
 
 
 class TemplateTests(DjangoTestCase):
