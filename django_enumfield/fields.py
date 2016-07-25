@@ -1,9 +1,9 @@
 import six
 
-import django
+from django import VERSION
 from django.db import models
 
-if django.VERSION < (1, 10):
+if VERSION < (1, 10):
     metaclass = models.SubfieldBase
 else:
     metaclass = type
