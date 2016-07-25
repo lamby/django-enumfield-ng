@@ -1,8 +1,14 @@
 import six
 
+import django
 from django.db import models
 
-class EnumField(six.with_metaclass(models.SubfieldBase, models.Field)):
+if django.VERSION < (1, 10):
+    metaclass = models.SubfieldBase
+else:
+    metaclass = type
+
+class EnumField(six.with_metaclass(metaclass, models.Field)):
     def __init__(self, enum, *args, **kwargs):
         self.enum = enum
 
@@ -15,6 +21,9 @@ class EnumField(six.with_metaclass(models.SubfieldBase, models.Field)):
 
     def to_python(self, value):
         return self.enum.to_python(value)
+
+    def from_db_value(self, value, expression, connection, context):
+        return self.to_python(value)
 
     def get_prep_value(self, value):
         if value is None:

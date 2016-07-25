@@ -1,5 +1,6 @@
 import unittest
 
+import django
 from django.db import models
 from django.core import serializers
 from django.http import HttpRequest, Http404
@@ -300,24 +301,30 @@ class FieldTests(DjangoTestCase):
         self.assertEqual(list(query), [m1])
 
     def test_unsupported_lookup(self):
-        with self.assertRaises(TypeError):
-            TestModel.objects.filter(test_field__icontains=('blah',))
+        if django.VERSION < (1, 10):
+            # This feature is only supported pre-Django 1.10.
+            with self.assertRaises(TypeError):
+                TestModel.objects.filter(test_field__icontains=('blah',))
 
 
 class TemplateTests(DjangoTestCase):
     def test_renders_template(self):
-        ctx = RequestContext(HttpRequest())
+        kwargs = {'request': HttpRequest()}
+        if django.VERSION < (1, 10):
+            kwargs = {'context_instance': RequestContext(HttpRequest())}
 
         self.assertEqual(
-            render_to_string('test.html', context_instance=ctx),
+            render_to_string('test.html', {}, **kwargs),
             "Item A, Item B\n",
         )
 
     def test_fails_loudly_for_invalid_app(self):
-        ctx = RequestContext(HttpRequest())
+        kwargs = {'request': HttpRequest()}
+        if django.VERSION < (1, 10):
+            kwargs = {'context_instance': RequestContext(HttpRequest())}
 
         with self.assertRaises(TemplateErrorException):
-            render_to_string('invalid.html', context_instance=ctx)
+            render_to_string('invalid.html', {}, **kwargs)
 
 
 class UtilsTests(unittest.TestCase):
