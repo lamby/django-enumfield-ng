@@ -156,8 +156,14 @@ class EnumTests(unittest.TestCase):
     def test_from_value(self):
         self.assertEqual(self.enum.from_value(10).slug, 'a')
 
+        with self.assertRaises(ValueError):
+            self.enum.from_value('a')
+
     def test_from_slug(self):
         self.assertEqual(self.enum.from_slug('b').value, 20)
+
+        with self.assertRaises(ValueError):
+            self.enum.from_value(99)
 
     def test_get_choices(self):
         self.assertEqual(
