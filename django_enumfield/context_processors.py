@@ -1,6 +1,6 @@
 import inspect
 
-from django.conf import settings
+from django.apps import apps
 from django.utils.lru_cache import lru_cache
 
 from .enum import Enum
@@ -13,8 +13,8 @@ def enumfield_context(request):
 def get_enums():
     result = TemplateErrorDict("Unknown app name %s")
 
-    for app in settings.INSTALLED_APPS:
-        module = getattr(__import__(app, {}, {}, ('enums',)), 'enums', None)
+    for app_config in apps.get_app_configs():
+        module = getattr(__import__(app_config.name, {}, {}, ('enums',)), 'enums', None)
 
         if module is None:
             continue
@@ -23,7 +23,7 @@ def get_enums():
             if not isinstance(x, Enum):
                 continue
 
-            app_name = app.split('.')[-1]
+            app_name = app_config.name.split('.')[-1]
 
             result.setdefault(
                 app_name,

@@ -38,16 +38,16 @@ class Enum(list):
         try:
             return {x.value: x for x in self}[value]
         except KeyError:
-            raise ValueError("%r is not a valid value for the enum" % value)
+            raise ValueError("%r is not a valid value for enum %s" % (value, self.name))
 
     def from_slug(self, slug):
-        if not isinstance(slug, str):
+        if not isinstance(slug, basestring):
             raise TypeError("item slug should be a str, not %r" % type(slug))
 
         try:
             return {x.slug.lower(): x for x in self}[slug.lower()]
         except KeyError:
-            raise ValueError("%r is not a valid slug for the enum" % slug)
+            raise ValueError("%r is not a valid slug for enum %s" % (slug, self.name))
 
     def get_choices(self):
         return [(x, x.display) for x in self]
@@ -69,4 +69,4 @@ class Enum(list):
         except (ValueError, TypeError):
             pass
 
-        raise ValueError("%r is not a valid slug or value for the enum" % value)
+        raise ValueError("%r is not a valid slug or value for enum %s" % (value, self.name))
