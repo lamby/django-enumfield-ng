@@ -1,3 +1,5 @@
+import six
+
 from .item import Item
 
 class Enum(list):
@@ -41,7 +43,7 @@ class Enum(list):
             raise ValueError("%r is not a valid value for enum %s" % (value, self.name))
 
     def from_slug(self, slug):
-        if not isinstance(slug, basestring):
+        if not isinstance(slug, six.string_types):
             raise TypeError("item slug should be a str, not %r" % type(slug))
 
         try:
