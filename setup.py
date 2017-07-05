@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='django-enumfield',
+    name='django-enumfield-ng',
     description="Type-safe, efficient & database-agnostic enumeration field "
         'for Django.',
     version='1.0.4',
