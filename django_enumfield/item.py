@@ -1,4 +1,5 @@
 import six
+import functools
 
 class ItemMeta(type):
     def __new__(mcs, name, bases, attrs):
@@ -13,6 +14,7 @@ class ItemMeta(type):
 
         return cls
 
+@functools.total_ordering
 class Item(six.with_metaclass(ItemMeta, object)):
     def __init__(self, value, slug, display=None):
         if not isinstance(value, int):
@@ -53,3 +55,9 @@ class Item(six.with_metaclass(ItemMeta, object)):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def __lt__(self, other):
+        if not isinstance(other, Item):
+            return NotImplemented
+
+        return self.value < other.value

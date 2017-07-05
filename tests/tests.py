@@ -58,6 +58,16 @@ class ItemTests(unittest.TestCase):
         self.assertEqual(item3, 'slug3')
         self.assertNotEqual(item2, 'slug2')
 
+    def test_comparison(self):
+        item1 = Item(10, 'slug1', "display1")
+        item2 = Item(20, 'slug2', "display2")
+        item2_copy = Item(20, 'slug2', "display2")
+
+        self.assertLess(item1, item2)
+        self.assertGreater(item2, item1)
+        self.assertGreaterEqual(item2, item2_copy)
+        self.assertLessEqual(item2, item2_copy)
+
 
 class EnumConstructionTests(unittest.TestCase):
     def test_instance_based_enum(self):
