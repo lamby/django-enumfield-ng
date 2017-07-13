@@ -26,10 +26,12 @@ class EnumField(six.with_metaclass(metaclass, models.Field)):
         return self.to_python(value)
 
     def get_prep_value(self, value):
-        if value is None:
-            return value
+        python_value = self.to_python(value)
 
-        return self.to_python(value).value
+        if python_value is None:
+            return None
+
+        return python_value.value
 
     def get_prep_lookup(self, lookup_type, value):
         def prepare(value):

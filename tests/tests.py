@@ -2,6 +2,7 @@ import unittest
 
 import django
 from django.db import models
+from django.db.utils import IntegrityError
 from django.core import serializers
 from django.http import HttpRequest, Http404
 from django.test import TestCase as DjangoTestCase
@@ -237,6 +238,17 @@ class FieldTests(DjangoTestCase):
         )
 
         self.assertCreated()
+
+    def test_model_instantiate_without_default(self):
+        TestModel(
+            test_field=TestModelEnum.A,
+        )
+
+    def test_model_creation_without_default(self):
+        with self.assertRaises(IntegrityError):
+            TestModel.objects.create(
+                test_field=TestModelEnum.A,
+            )
 
     def test_field_default(self):
         model = TestModel.objects.create(test_field_no_default=TestModelEnum.B)
