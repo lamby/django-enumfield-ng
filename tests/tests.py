@@ -226,6 +226,18 @@ class FieldTests(DjangoTestCase):
 
         self.assertCreated()
 
+    def test_model_instantiate_using_defulat(self):
+        TestModel(
+            test_field_no_default=TestModelEnum.B,
+        )
+
+    def test_model_creation_using_defulat(self):
+        TestModel.objects.create(
+            test_field_no_default=TestModelEnum.B,
+        )
+
+        self.assertCreated()
+
     def test_field_default(self):
         model = TestModel.objects.create(test_field_no_default=TestModelEnum.B)
         self.assertEqual(model.test_field, TestModelEnum.A)
