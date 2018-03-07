@@ -1,6 +1,39 @@
+import difflib
+
 import six
 
 from .item import Item
+
+
+class NoSuchSlugValueError(ValueError):
+    def __init__(self, slug, enum):
+        self.slug = slug
+        self.enum = enum
+        super(ValueError, self).__init__()
+
+    def _message(self):
+        valid_slugs = [x.slug for x in self.enum]
+
+        if len(valid_slugs) <= 3:
+            corrective_message = "Slugs: %s" % ', '.join(valid_slugs)
+        else:
+            best_matches = difflib.get_close_matches(self.slug, valid_slugs)
+            corrective_message = "Close matches: %s" % ', '.join(best_matches)
+
+        return "%r is not a valid slug for enum %s; %s" % (
+            self.slug,
+            self.enum.name,
+            corrective_message,
+        )
+
+    __str__ = _message
+
+    def repr(self):
+        return "%s(%r)" % (
+            type(self).__name__,
+            self._message(),
+        )
+
 
 class Enum(list):
     def __init__(self, name, *items):
@@ -49,7 +82,7 @@ class Enum(list):
         try:
             return {x.slug.lower(): x for x in self}[slug.lower()]
         except KeyError:
-            raise ValueError("%r is not a valid slug for enum %s" % (slug, self.name))
+            raise NoSuchSlugValueError(slug=slug, enum=self)
 
     def get_choices(self):
         return [(x, x.display) for x in self]
