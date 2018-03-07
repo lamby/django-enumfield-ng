@@ -176,8 +176,20 @@ class EnumTests(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.enum.from_slug(20)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValueError) as cm:
             self.enum.from_slug('nope')
+
+        self.assertIn(
+            'nope',
+            str(cm.exception),
+            "Exception message should contain errenous slug",
+        )
+
+        self.assertIn(
+            self.enum.name,
+            str(cm.exception),
+            "Exception message should contain enum name",
+        )
 
     def test_get_choices(self):
         self.assertEqual(
