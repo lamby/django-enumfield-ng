@@ -162,7 +162,17 @@ class EnumTests(unittest.TestCase):
             Item(20, 'b', "Item B"),
         )
 
+        LargeEnum = Enum(
+            'LargeEnum',
+            Item(10, 'item_a', "Item A"),
+            Item(20, 'item_b', "Item B"),
+            Item(30, 'item_c', "Item C"),
+            Item(40, 'item_d', "Item D"),
+            Item(50, 'item_e', "Item E"),
+        )
+
         self.enum = FooEnum
+        self.large_enum = LargeEnum
 
     def test_from_value(self):
         self.assertEqual(self.enum.from_value(10).slug, 'a')
@@ -186,7 +196,34 @@ class EnumTests(unittest.TestCase):
         )
 
         self.assertIn(
+            'a, b',
+            str(cm.exception),
+            "Exception message should contain valid slugs",
+        )
+
+        self.assertIn(
             self.enum.name,
+            str(cm.exception),
+            "Exception message should contain enum name",
+        )
+
+        with self.assertRaises(ValueError) as cm:
+            self.large_enum.from_slug('item')
+
+        self.assertIn(
+            'item',
+            str(cm.exception),
+            "Exception message should contain errenous slug",
+        )
+
+        self.assertIn(
+            'item_e, item_d, item_c',
+            str(cm.exception),
+            "Exception message should contain valid slugs",
+        )
+
+        self.assertIn(
+            self.large_enum.name,
             str(cm.exception),
             "Exception message should contain enum name",
         )
