@@ -6,7 +6,9 @@ from django.utils.lru_cache import lru_cache
 from .enum import Enum
 from .utils import TemplateErrorDict
 
-def enumfield_context(request):
+def enumfield_context(*args, **kwargs):
+    # We allow any arguments so that this function can be used outside views,
+    # for example by django-email-from-template.
     return {'enums': get_enums()}
 
 @lru_cache()
