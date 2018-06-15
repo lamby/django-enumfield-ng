@@ -5,7 +5,7 @@ from django.db import models
 from django.db.utils import IntegrityError
 from django.core import serializers
 from django.http import HttpRequest, Http404
-from django.test import TestCase as DjangoTestCase
+from django.test import TestCase as DjangoTestCase, override_settings
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.db.models.fields import NOT_PROVIDED
@@ -71,6 +71,8 @@ class ItemTests(unittest.TestCase):
 
 
 class EnumConstructionTests(unittest.TestCase):
+    longMessage = True
+
     def test_instance_based_enum(self):
         FooEnum = Enum(
             'FooEnum',
@@ -126,6 +128,54 @@ class EnumConstructionTests(unittest.TestCase):
         self.assertEqual(FooEnum.A.slug, 'A')
         self.assertEqual(FooEnum.B.display, "Item B")
         self.assertEqual(FooEnum.from_value(10).slug, 'A')
+
+    @override_settings(ENUMFIELD_EXPLICIT_SLUGS=True)
+    def test_simple_registry_enum_with_explicit_slugs(self):
+        FooEnum = Enum('FooEnum')
+
+        class A(Item):
+            __enum__ = FooEnum
+
+            value = 10
+            slug = 'item_a'
+            display = "Item A"
+
+        class B(Item):
+            __enum__ = FooEnum
+
+            value = 20
+            slug = 'item_b'
+            display = "Item B"
+
+        self.assertEqual(len(FooEnum), 2)
+        self.assertEqual(FooEnum.ITEM_A.slug, 'item_a')
+        self.assertEqual(FooEnum.ITEM_B.display, "Item B")
+        self.assertEqual(FooEnum.from_value(10).slug, 'item_a')
+
+    @override_settings(ENUMFIELD_EXPLICIT_SLUGS=True)
+    def test_slug_missing_with_explicit_slugs_s(self):
+        FooEnum = Enum('FooEnum')
+
+        # Should be able to create helpers which have neither slug nor value
+        class FooItem(Item):
+            __enum__ = FooEnum
+
+        self.assertEqual(len(FooEnum), 0)
+
+        with self.assertRaises(TypeError) as cm:
+            class BadItem(Item):
+                __enum__ = FooEnum
+
+                value = 20
+                display = "Item B"
+
+        self.assertEqual(
+            "'BadItem' class must have a slug attribute",
+            str(cm.exception),
+            "Wrong error message for missing slug",
+        )
+
+        self.assertEqual(len(FooEnum), 0)
 
     def test_registry_without_parent(self):
         FooEnum = Enum('FooEnum')
