@@ -1,15 +1,25 @@
 import six
 import functools
 
+from .app_settings import app_settings
+
+
 class ItemMeta(type):
     def __new__(mcs, name, bases, attrs):
         cls = super(ItemMeta, mcs).__new__(mcs, name, bases, attrs)
 
         try:
-            item = cls(attrs['value'], name, attrs.get('display'))
+            value = attrs['value']
         except KeyError:
             pass
         else:
+            slug = name
+            if app_settings.EXPLICIT_SLUGS:
+                if 'slug' not in attrs:
+                    raise TypeError("%r class must have a slug attribute" % name)
+                slug = attrs['slug']
+
+            item = cls(value, slug, attrs.get('display'))
             cls.__enum__.add_item(item)
 
         return cls
