@@ -1,6 +1,7 @@
 import six
 import functools
 
+from .utils import is_lazy_translation
 from .app_settings import app_settings
 
 
@@ -34,9 +35,15 @@ class Item(six.with_metaclass(ItemMeta, object)):
         if not isinstance(slug, str):
             raise TypeError("item slug should be a str, not %r" % type(slug))
 
-        if display is not None and not isinstance(display, six.string_types):
-            raise TypeError("item display name should be a basestring, not %r" \
-                % type(display))
+        if (
+            display is not None and
+            not isinstance(display, six.string_types) and
+            not is_lazy_translation(display)
+        ):
+            raise TypeError(
+                "item display name should be a string or lazily evaluated "
+                "string, not %r" % type(display),
+            )
 
         self.value = value
         self.slug = slug
