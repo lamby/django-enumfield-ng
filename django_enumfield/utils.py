@@ -1,4 +1,7 @@
+import six
+
 from django.http import Http404
+from django.utils.functional import Promise
 
 def get_enum_or_404(enum, slug):
     try:
@@ -25,3 +28,14 @@ class TemplateErrorDict(dict):
 
 class TemplateErrorException(RuntimeError):
     silent_variable_failure = False
+
+def is_lazy_translation(obj):
+    # There's no public API to figure out the type of a "Promise"/"__proxy__"
+    # object, so we look at whether the object has a string type in its set
+    # of resultclasses. We do this so that we don't have to force the lazy
+    # object as that may be expensive and we're likely working at import time.
+    if not isinstance(obj, Promise):
+        return False
+
+    resultclasses = obj.__reduce__()[1][3:]
+    return any(issubclass(x, six.string_types) for x in resultclasses)

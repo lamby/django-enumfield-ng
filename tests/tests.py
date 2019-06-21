@@ -9,6 +9,7 @@ from django.test import TestCase as DjangoTestCase, override_settings
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.db.models.fields import NOT_PROVIDED
+from django.utils.translation import gettext_lazy as _
 
 from django_enumfield import Enum, Item, get_enum_or_404
 from django_enumfield.utils import TemplateErrorException
@@ -68,6 +69,10 @@ class ItemTests(unittest.TestCase):
         self.assertGreater(item2, item1)
         self.assertGreaterEqual(item2, item2_copy)
         self.assertLessEqual(item2, item2_copy)
+    
+    def test_lazy_translation_in_display(self):
+        item = Item(10, 'slug', _("Display"))
+        self.assertEqual(item.display, "Display")
 
 
 class EnumConstructionTests(unittest.TestCase):
