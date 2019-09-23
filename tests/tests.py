@@ -448,16 +448,14 @@ class FieldTests(DjangoTestCase):
 
 class TemplateTests(DjangoTestCase):
     def test_renders_template(self):
-        kwargs = {'request': HttpRequest()}
         self.assertEqual(
-            render_to_string('test.html', {}, **kwargs),
+            render_to_string('test.html', {}, request=HttpRequest()),
             "Item A, Item B\n",
         )
 
     def test_fails_loudly_for_invalid_app(self):
-        kwargs = {'request': HttpRequest()}
         with self.assertRaises(TemplateErrorException):
-            render_to_string('invalid.html', {}, **kwargs)
+            render_to_string('invalid.html', {}, request=HttpRequest())
 
 
 class UtilsTests(unittest.TestCase):
