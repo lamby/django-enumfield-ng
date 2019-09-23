@@ -1,14 +1,7 @@
-import six
-
-from django import VERSION
 from django.db import models
 
-if VERSION < (1, 10):
-    metaclass = models.SubfieldBase
-else:
-    metaclass = type
 
-class EnumField(six.with_metaclass(metaclass, models.Field)):
+class EnumField(models.Field):
     def __init__(self, enum, *args, **kwargs):
         self.enum = enum
 

@@ -3,7 +3,6 @@ import shutil
 import tempfile
 import subprocess
 
-from django import VERSION
 from django.test import TestCase as DjangoTestCase
 
 
@@ -66,10 +65,7 @@ class MigrationIntegrationTests(DjangoTestCase):
         self.assertMigrationExists('0001')
 
         self.run_command('migrate')
-        
-        if VERSION < (1, 10):
-            self.run_command('makemigrations tests --exit', expect_failure=True)
-        else:
-            self.run_command('makemigrations tests --check', expect_failure=True)
+
+        self.run_command('makemigrations tests --check', expect_failure=True)
 
         self.assertMigrationExists('0002', exists=False)
