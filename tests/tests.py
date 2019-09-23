@@ -69,7 +69,7 @@ class ItemTests(unittest.TestCase):
         self.assertGreater(item2, item1)
         self.assertGreaterEqual(item2, item2_copy)
         self.assertLessEqual(item2, item2_copy)
-    
+
     def test_lazy_translation_in_display(self):
         item = Item(10, 'slug', _("Display"))
         self.assertEqual(item.display, "Display")
