@@ -50,7 +50,7 @@ class EnumField(models.Field):
         return models.IntegerField(*args, **kwargs)
 
     def deconstruct(self):
-        name, path, args, kwargs = super(EnumField, self).deconstruct()
+        name, _, args, kwargs = super(EnumField, self).deconstruct()
 
         # If there is a callable default, override it and set the first item
         # from the enum. This is to stop randomised defaults causing unstable
