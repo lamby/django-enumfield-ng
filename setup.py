@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from setuptools import setup, find_packages
 
@@ -16,7 +16,6 @@ setup(
     packages=find_packages(),
 
     install_requires=(
-        'Django>=1.11',
-        'six',
+        'Django>=2',
     ),
 )
