@@ -10,39 +10,39 @@ class ItemMeta(type):
         cls = super(ItemMeta, mcs).__new__(mcs, name, bases, attrs)
 
         try:
-            value = attrs['value']
+            value = attrs["value"]
         except KeyError:
             pass
         else:
             slug = name
             if app_settings.EXPLICIT_SLUGS:
-                if 'slug' not in attrs:
+                if "slug" not in attrs:
                     raise TypeError("%r class must have a slug attribute" % name)
-                slug = attrs['slug']
+                slug = attrs["slug"]
 
-            item = cls(value, slug, attrs.get('display'))
+            item = cls(value, slug, attrs.get("display"))
             cls.__enum__.add_item(item)
 
         return cls
+
 
 @functools.total_ordering
 class Item(six.with_metaclass(ItemMeta, object)):
     def __init__(self, value, slug, display=None):
         if not isinstance(value, int):
-            raise TypeError("item value should be an int, not %r" \
-                % type(value))
+            raise TypeError("item value should be an int, not %r" % type(value))
 
         if not isinstance(slug, str):
             raise TypeError("item slug should be a str, not %r" % type(slug))
 
         if (
-            display is not None and
-            not isinstance(display, six.string_types) and
-            not is_lazy_translation(display)
+            display is not None
+            and not isinstance(display, six.string_types)
+            and not is_lazy_translation(display)
         ):
             raise TypeError(
                 "item display name should be a string or lazily evaluated "
-                "string, not %r" % type(display),
+                "string, not %r" % type(display)
             )
 
         self.value = value

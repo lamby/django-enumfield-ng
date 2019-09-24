@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-TEMPLATE = 'ENUMFIELD_%s'
+TEMPLATE = "ENUMFIELD_%s"
 
 
 class NOT_PROVIDED:  # noqa
@@ -19,9 +19,7 @@ def setting(suffix, default=NOT_PROVIDED):
             if default is NOT_PROVIDED:
                 return getattr(settings, key)
         except AttributeError:
-            raise ImproperlyConfigured(
-                "Missing required setting: {}".format(key)
-            )
+            raise ImproperlyConfigured("Missing required setting: {}".format(key))
 
         return getattr(settings, key, default)
 
@@ -29,7 +27,7 @@ def setting(suffix, default=NOT_PROVIDED):
 
 
 class AppSettings(object):
-    EXPLICIT_SLUGS = setting('EXPLICIT_SLUGS', default=False)
+    EXPLICIT_SLUGS = setting("EXPLICIT_SLUGS", default=False)
 
 
 app_settings = AppSettings()

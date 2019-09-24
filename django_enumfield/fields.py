@@ -5,12 +5,12 @@ class EnumField(models.Field):
     def __init__(self, enum, *args, **kwargs):
         self.enum = enum
 
-        kwargs.setdefault('choices', enum.get_choices())
+        kwargs.setdefault("choices", enum.get_choices())
 
         super(EnumField, self).__init__(*args, **kwargs)
 
     def get_internal_type(self):
-        return 'IntegerField'
+        return "IntegerField"
 
     def to_python(self, value):
         return self.enum.to_python(value)
@@ -32,11 +32,11 @@ class EnumField(models.Field):
 
             return self.get_prep_value(x)
 
-        if lookup_type in ('exact', 'lt', 'lte', 'gt', 'gte'):
+        if lookup_type in ("exact", "lt", "lte", "gt", "gte"):
             return prepare(value)
-        elif lookup_type == 'in':
+        elif lookup_type == "in":
             return [prepare(v) for v in value]
-        elif lookup_type == 'isnull':
+        elif lookup_type == "isnull":
             return value
 
         raise TypeError("Lookup type %r not supported." % lookup_type)
@@ -55,17 +55,17 @@ class EnumField(models.Field):
         # If there is a callable default, override it and set the first item
         # from the enum. This is to stop randomised defaults causing unstable
         # migrations, as deconstruct is called every time makemigrations is run
-        default = kwargs.get('default')
+        default = kwargs.get("default")
         if default and callable(default):
-            kwargs['default'] = self.enum[0]
+            kwargs["default"] = self.enum[0]
 
         try:
-            kwargs['default'] = kwargs['default'].value
+            kwargs["default"] = kwargs["default"].value
         except (KeyError, AttributeError):
             # No default or not an Item instance
             pass
 
         # We don't want to serialise this for migrations.
-        del kwargs['choices']
+        del kwargs["choices"]
 
-        return name, 'django.db.models.fields.IntegerField', args, kwargs
+        return name, "django.db.models.fields.IntegerField", args, kwargs

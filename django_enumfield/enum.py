@@ -15,10 +15,10 @@ class NoSuchSlugValueError(ValueError):
         valid_slugs = [x.slug for x in self.enum]
 
         if len(valid_slugs) <= 3:
-            corrective_message = "Slugs: %s" % ', '.join(valid_slugs)
+            corrective_message = "Slugs: %s" % ", ".join(valid_slugs)
         else:
             best_matches = difflib.get_close_matches(self.slug, valid_slugs)
-            corrective_message = "Close matches: %s" % ', '.join(best_matches)
+            corrective_message = "Close matches: %s" % ", ".join(best_matches)
 
         return "%r is not a valid slug for enum %s; %s" % (
             self.slug,
@@ -29,10 +29,7 @@ class NoSuchSlugValueError(ValueError):
     __str__ = _message
 
     def repr(self):
-        return "%s(%r)" % (
-            type(self).__name__,
-            self._message(),
-        )
+        return "%s(%r)" % (type(self).__name__, self._message())
 
 
 class Enum(list):
@@ -49,8 +46,8 @@ class Enum(list):
 
     def add_item(self, item):
         for name, fn, value in (
-            ('value', self.from_value, item.value),
-            ('slug', self.from_slug, item.slug),
+            ("value", self.from_value, item.value),
+            ("slug", self.from_slug, item.slug),
         ):
             try:
                 fn(value)
@@ -88,7 +85,7 @@ class Enum(list):
         return [(x, x.display) for x in self]
 
     def to_python(self, value):
-        if value in (None, '', u''):
+        if value in (None, "", u""):
             return None
 
         if isinstance(value, Item):
@@ -104,4 +101,6 @@ class Enum(list):
         except (ValueError, TypeError):
             pass
 
-        raise ValueError("%r is not a valid slug or value for enum %s" % (value, self.name))
+        raise ValueError(
+            "%r is not a valid slug or value for enum %s" % (value, self.name)
+        )

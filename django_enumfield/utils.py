@@ -3,11 +3,13 @@ import six
 from django.http import Http404
 from django.utils.functional import Promise
 
+
 def get_enum_or_404(enum, slug):
     try:
         return enum.from_slug(slug)
     except ValueError:
         raise Http404()
+
 
 class TemplateErrorDict(dict):
     """
@@ -26,8 +28,10 @@ class TemplateErrorDict(dict):
 
         return super(TemplateErrorDict, self).__getitem__(key)
 
+
 class TemplateErrorException(RuntimeError):
     silent_variable_failure = False
+
 
 def is_lazy_translation(obj):
     # There's no public API to figure out the type of a "Promise"/"__proxy__"

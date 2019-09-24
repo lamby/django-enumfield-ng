@@ -6,17 +6,19 @@ from django.utils.lru_cache import lru_cache
 from .enum import Enum
 from .utils import TemplateErrorDict
 
+
 def enumfield_context(*args, **kwargs):
     # We allow any arguments so that this function can be used outside views,
     # for example by django-email-from-template.
-    return {'enums': get_enums()}
+    return {"enums": get_enums()}
+
 
 @lru_cache()
 def get_enums():
     result = TemplateErrorDict("Unknown app name %s")
 
     for app_config in apps.get_app_configs():
-        module = getattr(__import__(app_config.name, {}, {}, ('enums',)), 'enums', None)
+        module = getattr(__import__(app_config.name, {}, {}, ("enums",)), "enums", None)
 
         if module is None:
             continue
@@ -25,11 +27,10 @@ def get_enums():
             if not isinstance(x, Enum):
                 continue
 
-            app_name = app_config.name.split('.')[-1]
+            app_name = app_config.name.split(".")[-1]
 
             result.setdefault(
-                app_name,
-                TemplateErrorDict("Unknown enum %%r in %r app" % app_name),
+                app_name, TemplateErrorDict("Unknown enum %%r in %r app" % app_name)
             )[x.name] = x
 
     return result
