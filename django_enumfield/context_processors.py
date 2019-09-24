@@ -1,7 +1,7 @@
 import inspect
+import functools
 
 from django.apps import apps
-from django.utils.lru_cache import lru_cache
 
 from .enum import Enum
 from .utils import TemplateErrorDict
@@ -13,7 +13,7 @@ def enumfield_context(*args, **kwargs):
     return {"enums": get_enums()}
 
 
-@lru_cache()
+@functools.lru_cache()
 def get_enums():
     result = TemplateErrorDict("Unknown app name %s")
 
