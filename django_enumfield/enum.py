@@ -9,7 +9,7 @@ class NoSuchSlugValueError(ValueError):
     def __init__(self, slug, enum):
         self.slug = slug
         self.enum = enum
-        super(ValueError, self).__init__()
+        super().__init__()
 
     def _message(self):
         valid_slugs = [x.slug for x in self.enum]
