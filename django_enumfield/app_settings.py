@@ -26,7 +26,7 @@ def setting(suffix, default=NOT_PROVIDED):
     return fn
 
 
-class AppSettings(object):
+class AppSettings:
     EXPLICIT_SLUGS = setting("EXPLICIT_SLUGS", default=False)
 
 
