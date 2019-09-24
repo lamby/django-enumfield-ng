@@ -37,7 +37,6 @@ class MigrationIntegrationTests(DjangoTestCase):
                 self.assertNotEqual(e.returncode, 0)
                 failed = True
             else:
-                print(e.output)
                 self.assertEqual(e.returncode, 0)
 
         self.assertEqual(failed, expect_failure)
