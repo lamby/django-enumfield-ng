@@ -34,9 +34,9 @@ class EnumField(models.Field):
 
         if lookup_type in ("exact", "lt", "lte", "gt", "gte"):
             return prepare(value)
-        elif lookup_type == "in":
+        if lookup_type == "in":
             return [prepare(v) for v in value]
-        elif lookup_type == "isnull":
+        if lookup_type == "isnull":
             return value
 
         raise TypeError("Lookup type %r not supported." % lookup_type)
