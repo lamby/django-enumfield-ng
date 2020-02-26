@@ -15,7 +15,7 @@ class EnumField(models.Field):
     def to_python(self, value):
         return self.enum.to_python(value)
 
-    def from_db_value(self, value, expression, connection, context):
+    def from_db_value(self, value, expression, connection, *args, **kwargs):
         return self.to_python(value)
 
     def get_prep_value(self, value):
