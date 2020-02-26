@@ -475,7 +475,7 @@ class MigrationUnitTests(DjangoTestCase):
         model = model_class()
         name, path, args, kwargs = model._meta.get_field(field).deconstruct()
         self.assertEqual(name, field)
-        self.assertEqual(path, 'django.db.models.fields.IntegerField')
+        self.assertEqual(path, 'django.db.models.IntegerField')
         self.assertEqual(args, exp_args)
         self.assertEqual(kwargs, exp_kwargs)
 

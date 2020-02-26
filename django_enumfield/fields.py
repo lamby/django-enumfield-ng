@@ -68,4 +68,4 @@ class EnumField(models.Field):
         # We don't want to serialise this for migrations.
         del kwargs["choices"]
 
-        return name, "django.db.models.fields.IntegerField", args, kwargs
+        return name, "django.db.models.IntegerField", args, kwargs
