@@ -6,7 +6,7 @@ setup(
     name="django-enumfield-ng",
     description="Type-safe, efficient & database-agnostic enumeration field "
     "for Django.",
-    version='1.7.0',
+    version="1.7.0",
     url="https://chris-lamb.co.uk/projects/django-enumfield",
     author="Chris Lamb",
     author_email="chris@chris-lamb.co.uk",
