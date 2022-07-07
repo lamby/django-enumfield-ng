@@ -78,3 +78,14 @@ class Item(six.with_metaclass(ItemMeta, object)):
             return NotImplemented
 
         return self.value < other.value
+
+
+class StrictItem(Item):
+    def __hash__(self):
+        return super().__hash__() ^ id(type(self))
+
+    def __eq__(self, other):
+        return isinstance(type(self), other) and super().__eq__(other)
+
+    def __repr__(self):
+        return "<%s: %d %s %r>" % (type(self).__name__, self.value, self.slug, self.display)
