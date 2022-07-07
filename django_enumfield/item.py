@@ -5,29 +5,26 @@ from .utils import is_lazy_translation
 from .app_settings import app_settings
 
 
-class ItemMeta(type):
-    def __new__(mcs, name, bases, attrs):
-        cls = super(ItemMeta, mcs).__new__(mcs, name, bases, attrs)
+@functools.total_ordering
+class Item:
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        name = cls.__name__
 
         try:
-            value = attrs["value"]
-        except KeyError:
+            value = cls.value
+        except AttributeError:
             pass
         else:
             slug = name
             if app_settings.EXPLICIT_SLUGS:
-                if "slug" not in attrs:
+                if not hasattr(cls, "slug"):
                     raise TypeError("%r class must have a slug attribute" % name)
-                slug = attrs["slug"]
+                slug = cls.slug
 
-            item = cls(value, slug, attrs.get("display"))
+            item = cls(value, slug, getattr(cls, "display", None))
             cls.__enum__.add_item(item)
 
-        return cls
-
-
-@functools.total_ordering
-class Item(six.with_metaclass(ItemMeta, object)):
     def __init__(self, value, slug, display=None):
         if not isinstance(value, int):
             raise TypeError("item value should be an int, not %r" % type(value))
