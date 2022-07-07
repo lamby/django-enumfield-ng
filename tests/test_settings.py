@@ -24,3 +24,6 @@ SILENCED_SYSTEM_CHECKS = [
     '1_7.W001',
 ]
 ROOT_URLCONF = 'tests.urls'
+
+# Silence warning on Django 4. We don't really care what type it is.
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
