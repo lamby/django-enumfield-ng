@@ -49,7 +49,7 @@ class Item:
         return self.slug
 
     def __repr__(self):
-        return u"<enum.Item: %d %s %r>" % (self.value, self.slug, self.display)
+        return "<enum.Item: %d %s %r>" % (self.value, self.slug, self.display)
 
     def __hash__(self):
         return self.value
