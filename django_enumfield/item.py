@@ -1,4 +1,3 @@
-import six
 import functools
 
 from .utils import is_lazy_translation
@@ -34,7 +33,7 @@ class Item:
 
         if (
             display is not None
-            and not isinstance(display, six.string_types)
+            and not isinstance(display, str)
             and not is_lazy_translation(display)
         ):
             raise TypeError(
@@ -59,11 +58,11 @@ class Item:
         if isinstance(other, Item):
             return self.value == other.value
 
-        if isinstance(other, six.integer_types + six.string_types):
+        if isinstance(other, (int, str)):
             try:
                 return self.value == int(other)
             except ValueError:
-                return six.text_type(self.slug) == six.text_type(other)
+                return str(self.slug) == str(other)
 
         return False
 

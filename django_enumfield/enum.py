@@ -1,7 +1,5 @@
 import difflib
 
-import six
-
 from .item import Item
 
 
@@ -73,7 +71,7 @@ class Enum(list):
             raise ValueError("%r is not a valid value for enum %s" % (value, self.name))
 
     def from_slug(self, slug):
-        if not isinstance(slug, six.string_types):
+        if not isinstance(slug, str):
             raise TypeError("item slug should be a str, not %r" % type(slug))
 
         try:
