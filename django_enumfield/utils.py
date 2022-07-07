@@ -1,5 +1,3 @@
-import six
-
 from django.http import Http404
 from django.utils.functional import Promise
 
@@ -42,4 +40,4 @@ def is_lazy_translation(obj):
         return False
 
     resultclasses = obj.__reduce__()[1][3:]
-    return any(issubclass(x, six.string_types) for x in resultclasses)
+    return any(issubclass(x, str) for x in resultclasses)
