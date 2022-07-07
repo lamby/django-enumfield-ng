@@ -83,7 +83,7 @@ class Enum(list):
         return [(x, x.display) for x in self]
 
     def to_python(self, value):
-        if value in (None, "", u""):
+        if value in (None, ""):
             return None
 
         if isinstance(value, Item):
