@@ -102,3 +102,22 @@ class Enum(list):
         raise ValueError(
             "%r is not a valid slug or value for enum %s" % (value, self.name)
         )
+
+
+class StrictEnum(Enum):
+    def __eq__(self, other):
+        return (
+            isinstance(type(self), other) and
+            self.name == other.name and
+            super().__eq__(other)
+        )
+
+    def to_python(self, value):
+        if isinstance(value, Item):
+            own_item = self.from_value(value.value)
+            if own_item is not value:
+                raise ValueError(
+                    "%r is not a valid slug or value for enum %s" % (value, self.name)
+                )
+
+        return super().to_python(value)
